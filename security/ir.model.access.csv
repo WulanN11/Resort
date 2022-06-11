@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_resort_jenis_kamar,access.resort.jenis_kamar,model_resort_jenis_kamar,,1,1,1,1
+access_resort_booking,access.resort.booking,model_resort_booking,,1,1,1,1
+access_resort_bookingkamar,access.resort.bookingkamar,model_resort_bookingkamar,,1,1,1,1

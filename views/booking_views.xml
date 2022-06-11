@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- resort.booking tree view -->
+    <record id="resort_booking_view_tree" model="ir.ui.view">
+        <field name="name">BOOKING</field>
+        <field name="model">resort.booking</field>
+        <field name="arch" type="xml">
+            <tree>
+                <!-- Add your fields here -->
+                <header>
+                  <button name="invoice" string="Buat Invoice" class="btn btn-success" type="object"/>                  
+                </header>            
+                <!-- Add your fields here -->
+                <field name="name"/>   
+                <field name="pemesan"/> 
+                <field name="booking"/> 
+                <field name="checkin"/>           
+                <field name="total"/>                
+                <field name="bookingkamar_ids"/>
+                <field name="checkout"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- resort.booking form view -->
+    <record id="resort_booking_view_form" model="ir.ui.view">
+        <field name="name">BOOKING</field>
+        <field name="model">resort.booking</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <!-- Add your fields here -->
+                        <field name="name"/> 
+                        <field name="pemesan"/>
+                        <field name="booking"/>
+                        <field name="checkin"/>
+                        <field name="total"/>           
+                        <field name="checkout"/>                 
+                        <field name="bookingkamar_ids">
+                            <tree editable='bottom'>
+                                <field name="kamar_id"/>  
+                                <field name="harga_satuan"/> 
+                                <field name="qty"/> 
+                                <field name="harga" sum="Total"/>                                        
+                            </tree>
+                        </field>    
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- resort.booking window -->
+    <record id="resort_booking_action" model="ir.actions.act_window">
+        <field name="name">Booking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">resort.booking</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem 
+        id="resort_booking_menu_act" 
+        name="Booking" 
+        parent="resort_booking_menu_categ" 
+        action="resort_booking_action" 
+        sequence="10"/>
+
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- This Menu Item will appear in the Upper bar, that's why It needs NO parent or action -->
+<menuitem 
+    id="resort_menu_root" 
+    name="RESORT" 
+    sequence="30"/>
+
+<!-- This Menu Item Must have a parent -->
+<menuitem 
+    id="resort_kamar_menu_categ" 
+    name="KAMAR" 
+    parent="resort_menu_root" 
+    sequence="10"/>
+
+<!-- This Menu Item Must have a parent -->
+<menuitem 
+    id="resort_booking_menu_categ" 
+    name="BOOKING" 
+    parent="resort_menu_root" 
+    sequence="20"/>
+
+<!-- This Menu Item Must have a parent -->
+<menuitem 
+    id="resort_partner_menu_categ" 
+    name="PARTNER" 
+    parent="resort_menu_root" 
+    sequence="30"/>
+
+</odoo>
