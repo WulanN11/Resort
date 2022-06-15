@@ -6,9 +6,12 @@ class jenis_kamar(models.Model):
     _description = 'Jenis Kamar'
 
     name = fields.Char(string='Nama')
-    tipe = fields.Selection(string='Tipe Kamar', selection=[('standar room','Standar Room'), ('suite room','Suite Room'),  ('single room','Single Room')])
     stok = fields.Integer(string='Stok Kamar')
-    harga = fields.Integer(string='Harga Sewa per Unit')
+    harga = fields.Integer(string='Harga Per Unit')
+    tipe = fields.Selection(string='Tipe Kamar', selection=[
+        ('standar room','Standar Room'), 
+        ('suite room','Suite Room'),  
+        ('single room','Single Room')])
     img = fields.Binary(string='Image')
     pemesan = fields.Char(string='Pemesan')
     booking = fields.Char(string='Booking')

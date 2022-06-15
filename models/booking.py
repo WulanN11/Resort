@@ -1,4 +1,4 @@
-from xml.dom import VALIDATION_ERR, ValidationErr
+from odoo.exceptions import ValidationError
 from odoo import api, fields, models
 
 
@@ -8,7 +8,7 @@ class booking(models.Model):
 
     bookingkamar_ids= fields.One2many(
         comodel_name='resort.bookingkamar', 
-        inverse_name='kamar_id', 
+        inverse_name='booking_id', 
         string='Booking Kamar')
     
     name = fields.Char(string='Kode Order', required=True)
@@ -20,13 +20,14 @@ class booking(models.Model):
         domain=[('is_customer','=', True)],store=True)
         
     
-    total = fields.Integer(compute='_compute_total', string='Total', store=True)
+    total = fields.Integer(compute='_compute_total', string='Total')
     
-    @api.depends('bookingkamar_ids')
+    @api.model
     def _compute_total(self):
         for record in self:
-            a = sum(self.env['resort.bookingkamar'].search([('booking_id', '=', record.id)]).mapped('harga'))
-            record.total = a
+            jumlah=sum(self.env['resort.bookingkamar'].search([('booking_id','=',record.id)]).mapped('total_harga'))
+            record.total=jumlah
+
     checkout = fields.Boolean(string='Sudah Check Out', default=False)
     
     def invoice(self):
@@ -39,49 +40,52 @@ class booking(models.Model):
                 'product_id': 0,
                 'name' :'xxx' ,
                 'quantity': 1,
-                'name': 'product test 1',
+                'name': self.name,
                 'discount': 0,
                 'price_unit': self.total,
                 'price_subtotal': self.total,
-            })]            
+            })]        
+                            
         })
-        self.checkin=True
+        # self.checkin=True
         return invoices  
     
 
 class BookingKamar(models.Model):
     _name = 'resort.bookingkamar'
-    _description = 'New Description'
+    _description = 'Booking Kamar'
     
-    booking_id = fields.Many2one(comodel_name='resort.jenis_kamar', string='Booking Kamar')
+    name = fields.Char(string='Name')
     kamar_id = fields.Many2one(
         comodel_name='resort.jenis_kamar', 
         string='Kamar',
-        domain=[('stok','>','100')])
+        domain=[('stok','>','1')])
+    booking_id = fields.Many2one(comodel_name='resort.booking', string='Id')
     
-    name = fields.Char(string='Name')
-    harga_satuan = fields.Integer(compute='_compute_harga_satuan', string='harga_satuan')
+      
+    harga_unit = fields.Integer(compute='_compute_harga_unit', string='harga')
     
     @api.depends('kamar_id')
-    def _compute_harga_satuan(self):
+    def _compute_harga_unit(self):
         for record in self:
-            record.harga_satuan = record.kamar_id.harga
+            record.harga_unit=record.kamar_id.harga
     
     qty = fields.Integer(string='Quantity')
-    
+
     @api.constrains('qty')
     def _check_stok(self):
         for record in self:
-            tipe = self.env['resort.jenis_kamar'].search([('stok', '<',record.qty),('id', '=',record.id)])
+            tipe = self.env['resort.jenis_kamar'].search([('stok', '>',record.qty),('id', '=',record.id)])
             if tipe:
-                raise ValidationErr("Stok kamar yang dipilih tidak cukup")
+                raise ValidationError("Stok kamar yang dipilih tidak cukup")
     
-    harga = fields.Integer(compute='_compute_harga', string='harga')
     
-    @api.depends('harga_satuan','qty')
-    def _compute_harga(self):
+    total_harga = fields.Integer(compute='_compute_total_harga', string='harga')
+    
+    @api.depends('qty','harga_unit')
+    def _compute_total_harga(self):
         for record in self:
-               record.harga = record.harga_satuan * record.qty
+               record.total_harga = record.qty*record.harga_unit
                
     
     @api.model
